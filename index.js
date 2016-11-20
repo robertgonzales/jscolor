@@ -1,9 +1,10 @@
-const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
-const hexShortRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
 
 
 (function() {
 
+  const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+  const hexShortRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+  
   const Color = {
 
     // private
@@ -116,10 +117,6 @@ const hexShortRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
       }
       return `hsl(${Object.values(hsl).join(',')})`
     },
-
-    get hsla() {
-      
-    }
 
     get hex() {
       return '#' + Object
