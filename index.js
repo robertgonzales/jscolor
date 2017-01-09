@@ -279,26 +279,28 @@ class Color {
   }
 
   constructor(color) {
-    this._color = { r: 0, g: 0, b: 0 }
-    this._alpha = 1
-    this._mode = RGB
+    this.state = {
+      color: { r: 0, g: 0, b: 0 },
+      alpha: 1,
+      mode: RGB,
+    }
     this.from(color)
   }
 
   getRGB() {
-    if (this._mode === RGB) {
-      return this._color
+    if (this.state.mode === RGB) {
+      return this.state.color
     } else {
-      const { h, s, l } = this._color
+      const { h, s, l } = this.state.color
       return Color.hslToRGB(h, s, l)
     }
   }
 
   getHSL() {
-    if (this._mode === HSL) {
-      return this._color
+    if (this.state.mode === HSL) {
+      return this.state.color
     } else {
-      const { r, g, b } = this._color
+      const { r, g, b } = this.state.color
       return Color.rgbToHSL(r, g, b)
     }
   }
@@ -328,33 +330,33 @@ class Color {
     if (Color.names[color]) {
       color = Color.names[color]
     } else if (color === 'transparent') {
-      this._alpha = 0
+      this.state.alpha = 0
       return
     }
 
     let match
     if ((match = matchers.rgb.exec(color))) {
-      this._color = Color.ensureRGB(match[1], match[2], match[3])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(match[1], match[2], match[3])
+      this.state.mode = RGB
     } else if ((match = matchers.rgba.exec(color))) {
-      this._color = Color.ensureRGB(match[1], match[2], match[3])
-      this._alpha = Color.ensureAlpha(match[4])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(match[1], match[2], match[3])
+      this.state.alpha = Color.ensureAlpha(match[4])
+      this.state.mode = RGB
     } else if ((match = matchers.hsl.exec(color))) {
-      this._color = Color.ensureHSL(match[1], match[2], match[3])
-      this._mode = HSL
+      this.state.color = Color.ensureHSL(match[1], match[2], match[3])
+      this.state.mode = HSL
     } else if ((match = matchers.hsla.exec(color))) {
-      this._color = Color.ensureHSL(match[1], match[2], match[3])
-      this._alpha = Color.ensureAlpha(match[4])
-      this._mode = HSL
+      this.state.color = Color.ensureHSL(match[1], match[2], match[3])
+      this.state.alpha = Color.ensureAlpha(match[4])
+      this.state.mode = HSL
     } else if ((match = matchers.hex6.exec(color))) {
       const rgb = match.map(v => parseInt(v, 16))
-      this._color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
+      this.state.mode = RGB
     } else if ((match = matchers.hex3.exec(color))) {
       const rgb = match.map(v => parseInt(v + '' + v, 16))
-      this._color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
+      this.state.mode = RGB
     }
   }
 
@@ -364,41 +366,41 @@ class Color {
     const color = '' + num
     if ((match = matchers.hex6.exec(color))) {
       const rgb = match.map(v => parseInt(v, 16))
-      this._color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
+      this.state.mode = RGB
     } else if ((match = matchers.hex3.exec(color))) {
       const rgb = match.map(v => parseInt(v + '' + v, 16))
-      this._color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
+      this.state.mode = RGB
     }
   }
 
   fromObject(obj) {
     if (typeof obj !== 'object') return
     if (exists(obj.r) && exists(obj.g) && exists(obj.b)) {
-      this._color = Color.ensureRGB(obj.r, obj.g, obj.b)
-      this._mode = RGB
+      this.state.color = Color.ensureRGB(obj.r, obj.g, obj.b)
+      this.state.mode = RGB
     } else if (exists(obj.h) && exists(obj.s) && exists(obj.l)) {
-      this._color = Color.ensureHSL(obj.h, obj.s, obj.l)
-      this._mode = HSL
+      this.state.color = Color.ensureHSL(obj.h, obj.s, obj.l)
+      this.state.mode = HSL
     }
     if (exists(obj.a)) {
-      this._alpha = Color.ensureAlpha(obj.a)
+      this.state.alpha = Color.ensureAlpha(obj.a)
     }
   }
 
   fromArray(arr, type=RGB) {
-    if (typeof arr !== 'array') return
+    if (!Array.isArray(arr)) return
     if (exists(arr[0]) && exists(arr[1]) && exists(arr[2])) {
       if (type === HSL) {
-        this._color = Color.ensureHSL(arr[0], arr[1], arr[2])
+        this.state.color = Color.ensureHSL(arr[0], arr[1], arr[2])
       } else {
-        this._color = Color.ensureRGB(arr[0], arr[1], arr[2])
+        this.state.color = Color.ensureRGB(arr[0], arr[1], arr[2])
       }
-      this._mode = type
+      this.state.mode = type
     }
     if (exists(arr[3])) {
-      this._alpha = Color.ensureAlpha(arr[3])
+      this.state.alpha = Color.ensureAlpha(arr[3])
     }
   }
 
@@ -435,7 +437,7 @@ class Color {
   }
 
   get alpha() {
-    return this._alpha
+    return this.state.alpha
   }
 
   get rgb() {
@@ -451,7 +453,7 @@ class Color {
       .values(this.getRGB())
       .map(v => Math.round(v))
       .join(',')
-    return `rgba(${rgb},${this._alpha})`
+    return `rgba(${rgb},${this.state.alpha})`
   }
 
   get hsl() {
@@ -469,7 +471,7 @@ class Color {
       .map(v => Math.round(v))
       .map((v, i) => i > 0 ? `${v}%` : v)
       .join(',')
-    return `hsla(${hsl},${this._alpha})`
+    return `hsla(${hsl},${this.state.alpha})`
   }
 
   get hex() {
@@ -495,47 +497,47 @@ class Color {
   set hue(h) {
     const { s, l } = this.getHSL()
     h = Color.ensureHue(h)
-    this._color = { h, s, l }
-    this._mode = HSL
+    this.state.color = { h, s, l }
+    this.state.mode = HSL
   }
 
   set saturation(s) {
     const { h, l } = this.getHSL()
     s = Color.ensureValue(s, 100)
-    this._color = { h, s, l }
-    this._mode = HSL
+    this.state.color = { h, s, l }
+    this.state.mode = HSL
   }
 
   set lightness(l) {
     const { h, s } = this.getHSL()
     l = Color.ensureValue(l, 100)
-    this._color = { h, s, l }
-    this._mode = HSL
+    this.state.color = { h, s, l }
+    this.state.mode = HSL
   }
 
   set red(r) {
     const { g, b } = this.getRGB()
     r = Color.ensureValue(r, 255)
-    this._color = { r, g, b }
-    this._mode = RGB
+    this.state.color = { r, g, b }
+    this.state.mode = RGB
   }
 
   set green(g) {
     const { r, b } = this.getRGB()
     g = Color.ensureValue(g, 255)
-    this._color = { r, g, b }
-    this._mode = RGB
+    this.state.color = { r, g, b }
+    this.state.mode = RGB
   }
 
   set blue(b) {
     const { r, g } = this.getRGB()
     b = Color.ensureValue(b, 255)
-    this._color = { r, g, b }
-    this._mode = RGB
+    this.state.color = { r, g, b }
+    this.state.mode = RGB
   }
 
   set alpha(a) {
-    this._alpha = Color.ensureAlpha(a)
+    this.state.alpha = Color.ensureAlpha(a)
   }
 
   set rgb(rgb) {
@@ -558,12 +560,12 @@ class Color {
     this.from(hex)
     // const hex = str.replace(hexShortRegex, (m, r, g, b) => r + r + g + g + b + b)
     // const hex2rgb = hexRegex.exec(hex).map(v => parseInt(v, 16))
-    // this._color = {
+    // this.state.color = {
     //   r: hex2rgb[1],
     //   g: hex2rgb[2],
     //   b: hex2rgb[3],
     // }
-    // this._mode = RGB
+    // this.state.mode = RGB
   }
 
   set name(name) {
@@ -601,8 +603,8 @@ if (typeof module !== typeof undefined) {
 
 // JUST TESTING
 
-// window.c = new Color("#ff0000")
+window.c = new Color("gray")
 
-// setInterval(() => {
-//   document.body.style.backgroundColor = c.hsla
-// }, 30)
+setInterval(() => {
+  document.body.style.backgroundColor = c.hsla
+}, 30)  
