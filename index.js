@@ -282,7 +282,9 @@ class Color {
       alpha: 1,
       mode: RGB,
     }
-    this.from(color)
+    if (color) {
+      this.from(color)
+    }
   }
 
   getRGB() {
