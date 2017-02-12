@@ -475,6 +475,7 @@ class Color {
   get hex() {
     const hex = Object
       .values(this.getRGB())
+      .map(v => Math.round(v))
       .map(v => v.toString(16))
       .map(v => v.length === 2 ? v : '0' + v)
       .join('')
