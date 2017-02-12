@@ -1,0 +1,19 @@
+{
+  "name": "jscolor",
+  "version": "1.0.0",
+  "description": "Color manipulation using getters and setters",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robertgonzales/colorjs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robertgonzales/colorjs/issues"
+  },
+  "homepage": "https://github.com/robertgonzales/colorjs#readme"
+}

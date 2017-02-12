@@ -1,6 +1,3 @@
-// const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
-// const hexShortRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
-
 const exists = (value) => value !== null && value !== undefined
 
 // modes
@@ -8,18 +5,19 @@ const RGB = 'rgb'
 const HSL = 'hsl'
 const HEX = 'hex'
 
-const CSS_INTEGER = '[-\\+]?\\d+%?'
-const CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?'
-const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')'
-const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
-const PERMISSIVE_MATCH4 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
+// matchers
+const CSS_INT = '[-\\+]?\\d+%?'
+const CSS_NUM = '[-\\+]?\\d*\\.\\d+%?'
+const CSS_UNIT = '(?:' + CSS_NUM + ')|(?:' + CSS_INT + ')'
+const MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
+const MATCH4 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
 
 const matchers = {
   CSS_UNIT: new RegExp(CSS_UNIT),
-  rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
-  rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
-  hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
-  hsla: new RegExp("hsla" + PERMISSIVE_MATCH4),
+  rgb: new RegExp("rgb" + MATCH3),
+  rgba: new RegExp("rgba" + MATCH4),
+  hsl: new RegExp("hsl" + MATCH3),
+  hsla: new RegExp("hsla" + MATCH4),
   hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
   hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
 }
@@ -224,13 +222,13 @@ class Color {
       const d = max - min
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
       switch (max) {
-        case r: 
+        case r:
           h = (g - b) / d + (g < b ? 6 : 0)
           break
-        case g: 
+        case g:
           h = (b - r) / d + 2
           break
-        case b: 
+        case b:
           h = (r - g) / d + 4
           break
       }
@@ -321,12 +319,12 @@ class Color {
 
   fromString(color, type=null) {
     if (typeof color !== 'string') return
-    
+
     color = color
       .replace(/^\s+/, '')
       .replace(/\s+$/, '')
       .toLowerCase()
-    
+
     if (Color.names[color]) {
       color = Color.names[color]
     } else if (color === 'transparent') {
@@ -558,14 +556,6 @@ class Color {
 
   set hex(hex) {
     this.from(hex)
-    // const hex = str.replace(hexShortRegex, (m, r, g, b) => r + r + g + g + b + b)
-    // const hex2rgb = hexRegex.exec(hex).map(v => parseInt(v, 16))
-    // this.state.color = {
-    //   r: hex2rgb[1],
-    //   g: hex2rgb[2],
-    //   b: hex2rgb[3],
-    // }
-    // this.state.mode = RGB
   }
 
   set name(name) {
@@ -600,11 +590,3 @@ class Color {
 if (typeof module !== typeof undefined) {
   module.exports = Color
 }
-
-// JUST TESTING
-
-window.c = new Color("gray")
-
-setInterval(() => {
-  document.body.style.backgroundColor = c.hsla
-}, 30)  
