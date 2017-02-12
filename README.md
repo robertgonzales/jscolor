@@ -1,3 +1,3 @@
-#### Color.js
+#### jscolor
 
-Color manipulation using getters and setters
+Super simple color manipulation using getters and setters

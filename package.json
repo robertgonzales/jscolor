@@ -1,19 +1,31 @@
 {
   "name": "jscolor",
-  "version": "1.0.0",
-  "description": "Color manipulation using getters and setters",
+  "version": "0.1.0",
+  "description": "Super simple color manipulation using getters and setters",
   "main": "index.js",
+  "keywords": [
+    "es6",
+    "color",
+    "rgba",
+    "hsl",
+    "hue",
+    "luminance",
+    "saturation",
+    "grayscale",
+    "getter",
+    "setter",
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robertgonzales/colorjs.git"
+    "url": "git+https://github.com/robertgonzales/jscolor.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Robert Gonzales",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/robertgonzales/colorjs/issues"
+    "url": "https://github.com/robertgonzales/jscolor/issues"
   },
-  "homepage": "https://github.com/robertgonzales/colorjs#readme"
+  "homepage": "https://github.com/robertgonzales/jscolor#readme"
 }
