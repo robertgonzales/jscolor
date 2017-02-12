@@ -3,19 +3,19 @@
 Super simple color manipulation using getters and setters
 
 Install:
-```
+```js
 npm install --save jscolor
 ```
 
 Usage:
-```
+```js
 import Color from 'jscolor'
 
 let c = new Color('#483d8b')
 ```
 
 Read color values without any extra work:
-```
+```js
 c.r           // => 72
 c.g           // => 61
 c.b           // => 139
@@ -39,7 +39,7 @@ c.name        // => 'darkslateblue'
 ```
 
 Manipulate colors using normal operators:
-```
+```js
 c.r = 100
 c.rgb         // => 'rgb(100,61,139)'
 c.hex         // => '#643d8b'
