@@ -1,16 +1,32 @@
-const exists = (value) => value !== null && value !== undefined
+const exists = value => value !== null && value !== undefined
 
 // modes
-const RGB = 'rgb'
-const HSL = 'hsl'
-const HEX = 'hex'
+const RGB = "rgb"
+const HSL = "hsl"
+const HEX = "hex"
 
 // matchers
-const CSS_INT = '[-\\+]?\\d+%?'
-const CSS_NUM = '[-\\+]?\\d*\\.\\d+%?'
-const CSS_UNIT = '(?:' + CSS_NUM + ')|(?:' + CSS_INT + ')'
-const MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
-const MATCH4 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?'
+const CSS_INT = "[-\\+]?\\d+%?"
+const CSS_NUM = "[-\\+]?\\d*\\.\\d+%?"
+const CSS_UNIT = "(?:" + CSS_NUM + ")|(?:" + CSS_INT + ")"
+const MATCH3 =
+  "[\\s|\\(]+(" +
+  CSS_UNIT +
+  ")[,|\\s]+(" +
+  CSS_UNIT +
+  ")[,|\\s]+(" +
+  CSS_UNIT +
+  ")\\s*\\)?"
+const MATCH4 =
+  "[\\s|\\(]+(" +
+  CSS_UNIT +
+  ")[,|\\s]+(" +
+  CSS_UNIT +
+  ")[,|\\s]+(" +
+  CSS_UNIT +
+  ")[,|\\s]+(" +
+  CSS_UNIT +
+  ")\\s*\\)?"
 
 const matchers = {
   CSS_UNIT: new RegExp(CSS_UNIT),
@@ -23,7 +39,6 @@ const matchers = {
 }
 
 class Color {
-
   static get names() {
     return {
       aliceblue: "f0f8ff",
@@ -174,7 +189,7 @@ class Color {
       white: "ffffff",
       whitesmoke: "f5f5f5",
       yellow: "ffff00",
-      yellowgreen: "9acd32"
+      yellowgreen: "9acd32",
     }
   }
 
@@ -189,7 +204,7 @@ class Color {
   }
 
   static hslToRGB(h, s, l) {
-    h /= 360, s /= 100, l /= 100
+    ;(h /= 360), (s /= 100), (l /= 100)
     var r, g, b
     if (s == 0) {
       r = g = b = l
@@ -197,22 +212,22 @@ class Color {
       function hueToRGB(p, q, t) {
         if (t < 0) t += 1
         if (t > 1) t -= 1
-        if (t < 1/6) return p + (q - p) * 6 * t
-        if (t < 1/2) return q
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6
+        if (t < 1 / 6) return p + (q - p) * 6 * t
+        if (t < 1 / 2) return q
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
         return p
       }
       const q = l < 0.5 ? l * (1 + s) : l + s - l * s
       const p = 2 * l - q
-      r = hueToRGB(p, q, h + 1/3)
+      r = hueToRGB(p, q, h + 1 / 3)
       g = hueToRGB(p, q, h)
-      b = hueToRGB(p, q, h - 1/3)
+      b = hueToRGB(p, q, h - 1 / 3)
     }
     return { r: r * 255, g: g * 255, b: b * 255 }
   }
 
   static rgbToHSL(r, g, b) {
-    r /= 255, g /= 255, b /= 255
+    ;(r /= 255), (g /= 255), (b /= 255)
     const max = Math.max(r, g, b)
     const min = Math.min(r, g, b)
     let h, s, l = (max + min) / 2
@@ -251,7 +266,7 @@ class Color {
   }
 
   static ensureValue(v, max) {
-    if (typeof v === 'string' && v.indexOf('%') > -1) {
+    if (typeof v === "string" && v.indexOf("%") > -1) {
       v = parseInt(v) / 100 * max
     } else {
       v = parseInt(v)
@@ -305,12 +320,12 @@ class Color {
     }
   }
 
-  from(color, type=null) {
+  from(color, type = null) {
     if (!color) {
-      throw new Error('No color provided')
-    } else if (typeof color === 'string') {
+      throw new Error("No color provided")
+    } else if (typeof color === "string") {
       this.fromString(color, type)
-    } else if (typeof color === 'number') {
+    } else if (typeof color === "number") {
       this.fromNumber(color, type)
     } else if (Array.isArray(color)) {
       this.fromArray(color, type)
@@ -319,17 +334,14 @@ class Color {
     }
   }
 
-  fromString(color, type=null) {
-    if (typeof color !== 'string') return
+  fromString(color, type = null) {
+    if (typeof color !== "string") return
 
-    color = color
-      .replace(/^\s+/, '')
-      .replace(/\s+$/, '')
-      .toLowerCase()
+    color = color.replace(/^\s+/, "").replace(/\s+$/, "").toLowerCase()
 
     if (Color.names[color]) {
       color = Color.names[color]
-    } else if (color === 'transparent') {
+    } else if (color === "transparent") {
       this.state.alpha = 0
       return
     }
@@ -354,29 +366,29 @@ class Color {
       this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
       this.state.mode = RGB
     } else if ((match = matchers.hex3.exec(color))) {
-      const rgb = match.map(v => parseInt(v + '' + v, 16))
+      const rgb = match.map(v => parseInt(v + "" + v, 16))
       this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
       this.state.mode = RGB
     }
   }
 
   fromNumber(num) {
-    if (typeof num !== 'number') return
+    if (typeof num !== "number") return
     let match
-    const color = '' + num
+    const color = "" + num
     if ((match = matchers.hex6.exec(color))) {
       const rgb = match.map(v => parseInt(v, 16))
       this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
       this.state.mode = RGB
     } else if ((match = matchers.hex3.exec(color))) {
-      const rgb = match.map(v => parseInt(v + '' + v, 16))
+      const rgb = match.map(v => parseInt(v + "" + v, 16))
       this.state.color = Color.ensureRGB(rgb[1], rgb[2], rgb[3])
       this.state.mode = RGB
     }
   }
 
   fromObject(obj) {
-    if (typeof obj !== 'object') return
+    if (typeof obj !== "object") return
     if (exists(obj.r) && exists(obj.g) && exists(obj.b)) {
       this.state.color = Color.ensureRGB(obj.r, obj.g, obj.b)
       this.state.mode = RGB
@@ -389,7 +401,7 @@ class Color {
     }
   }
 
-  fromArray(arr, type=RGB) {
+  fromArray(arr, type = RGB) {
     if (!Array.isArray(arr)) return
     if (exists(arr[0]) && exists(arr[1]) && exists(arr[2])) {
       if (type === HSL) {
@@ -441,55 +453,46 @@ class Color {
   }
 
   get rgb() {
-    const rgb = Object
-      .values(this.getRGB())
-      .map(v => Math.round(v))
-      .join(',')
+    const rgb = Object.values(this.getRGB()).map(v => Math.round(v)).join(",")
     return `rgb(${rgb})`
   }
 
   get rgba() {
-    const rgb = Object
-      .values(this.getRGB())
-      .map(v => Math.round(v))
-      .join(',')
+    const rgb = Object.values(this.getRGB()).map(v => Math.round(v)).join(",")
     return `rgba(${rgb},${this.state.alpha})`
   }
 
   get hsl() {
-    const hsl = Object
-      .values(this.getHSL())
+    const hsl = Object.values(this.getHSL())
       .map(v => Math.round(v))
-      .map((v, i) => i > 0 ? `${v}%` : v)
-      .join(',')
+      .map((v, i) => (i > 0 ? `${v}%` : v))
+      .join(",")
     return `hsl(${hsl})`
   }
 
   get hsla() {
-    const hsl = Object
-      .values(this.getHSL())
+    const hsl = Object.values(this.getHSL())
       .map(v => Math.round(v))
-      .map((v, i) => i > 0 ? `${v}%` : v)
-      .join(',')
+      .map((v, i) => (i > 0 ? `${v}%` : v))
+      .join(",")
     return `hsla(${hsl},${this.state.alpha})`
   }
 
   get hex() {
-    const hex = Object
-      .values(this.getRGB())
+    const hex = Object.values(this.getRGB())
       .map(v => Math.round(v))
       .map(v => v.toString(16))
-      .map(v => v.length === 2 ? v : '0' + v)
-      .join('')
+      .map(v => (v.length === 2 ? v : "0" + v))
+      .join("")
     return `#${hex}`
   }
 
   get name() {
-    const hex = Object
-      .values(this.getRGB())
+    const hex = Object.values(this.getRGB())
+      .map(v => Math.round(v))
       .map(v => v.toString(16))
-      .map(v => v.length === 2 ? v : '0' + v)
-      .join('')
+      .map(v => (v.length === 2 ? v : "0" + v))
+      .join("")
     return Color.reverseNames[hex] || false
   }
 
@@ -567,29 +570,54 @@ class Color {
 
   // aliases
 
-  get h() { return this.hue }
-  set h(h) { this.hue = h }
+  get h() {
+    return this.hue
+  }
+  set h(h) {
+    this.hue = h
+  }
 
-  get s() { return this.saturation }
-  set s(s) { this.saturation = s }
+  get s() {
+    return this.saturation
+  }
+  set s(s) {
+    this.saturation = s
+  }
 
-  get l() { return this.lightness }
-  set l(l) { this.lightness = l }
+  get l() {
+    return this.lightness
+  }
+  set l(l) {
+    this.lightness = l
+  }
 
-  get r() { return this.red }
-  set r(r) { this.red = r }
+  get r() {
+    return this.red
+  }
+  set r(r) {
+    this.red = r
+  }
 
-  get g() { return this.green }
-  set g(g) { this.green = g }
+  get g() {
+    return this.green
+  }
+  set g(g) {
+    this.green = g
+  }
 
-  get b() { return this.blue }
-  set b(b) { this.blue = b }
+  get b() {
+    return this.blue
+  }
+  set b(b) {
+    this.blue = b
+  }
 
-  get a() { return this.alpha }
-  set a(a) { this.alpha = a }
-
+  get a() {
+    return this.alpha
+  }
+  set a(a) {
+    this.alpha = a
+  }
 }
 
-if (typeof module !== typeof undefined) {
-  module.exports = Color
-}
+export default Color
