@@ -1,6 +1,6 @@
 {
   "name": "jscolor",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Super simple color manipulation using getters and setters",
   "main": "./dist/index.js",
   "keywords": [
