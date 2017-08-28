@@ -35,6 +35,7 @@ c.lightness   // => 39
 c.hsl         // => hsl(248,39%,39%)
 c.hsla        // => hsla(248,39%,39%,1)
 c.hex         // => '#483d8b'
+c.yiq         // => 73.181
 c.name        // => 'darkslateblue'
 ```
 
